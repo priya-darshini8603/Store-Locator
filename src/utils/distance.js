@@ -48,6 +48,7 @@ export function isStoreOpen(hours, date = new Date()) {
   if (!todayHours) return false;
 
   const normalized = String(todayHours).trim().toLowerCase();
+  if (normalized === "holiday") return false;
   if (normalized === "closed") return false;
   if (normalized.includes("24") || normalized.includes("24/7") || normalized.includes("open 24")) {
     return true;
@@ -80,10 +81,10 @@ export function isStoreOpen(hours, date = new Date()) {
   return minutesNow >= openMin && minutesNow < closeMin;
 }
 
-export function getEffectiveStoreStatus(store, date = new Date()) {
-  if (!store || typeof store !== "object") return "closed";
-  if (store.status === "closed") return "closed";
-  return isStoreOpen(store.hours, date) ? "open" : "closed";
+export function getEffectiveStoreStatus(store, currentTime = new Date()) {
+  return isStoreOpen(store.hours, currentTime)
+    ? "open"
+    : "closed";
 }
 
 export async function geocodeAddress(address) {
